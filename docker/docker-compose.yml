@@ -2,7 +2,10 @@ version: '3.1'
 
 services:
     flowise:
-        image: flowiseai/flowise
+        #image: flowiseai/flowise.
+        build:
+            context: .  # Path to the directory containing the Dockerfile
+            dockerfile: Dockerfile # Only necessary if your Dockerfile has a non-standard name
         restart: always
         environment:
             - PORT=${PORT}
