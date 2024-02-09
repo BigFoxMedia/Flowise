@@ -1,5 +1,7 @@
 {
     "description": "OpenAI Assistant that has instructions and can leverage models, tools, and knowledge to respond to user queries",
+    "categories": "Custom Tool, SerpAPI,OpenAI Assistant,Calculator Tool,Langchain",
+    "framework": "Langchain",
     "badge": "NEW",
     "nodes": [
         {
@@ -14,7 +16,7 @@
             "data": {
                 "id": "openAIAssistant_0",
                 "label": "OpenAI Assistant",
-                "version": 1,
+                "version": 3,
                 "name": "openAIAssistant",
                 "type": "OpenAIAssistant",
                 "baseClasses": ["OpenAIAssistant"],
@@ -27,6 +29,15 @@
                         "type": "asyncOptions",
                         "loadMethod": "listAssistants",
                         "id": "openAIAssistant_0-input-selectedAssistant-asyncOptions"
+                    },
+                    {
+                        "label": "Disable File Download",
+                        "name": "disableFileDownload",
+                        "type": "boolean",
+                        "description": "Messages can contain text, images, or files. In some cases, you may want to prevent others from downloading the files. Learn more from OpenAI File Annotation <a target=\"_blank\" href=\"https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages\">docs</a>",
+                        "optional": true,
+                        "additionalParams": true,
+                        "id": "openAIAssistant_0-input-disableFileDownload-boolean"
                     }
                 ],
                 "inputAnchors": [
@@ -36,6 +47,15 @@
                         "type": "Tool",
                         "list": true,
                         "id": "openAIAssistant_0-input-tools-Tool"
+                    },
+                    {
+                        "label": "Input Moderation",
+                        "description": "Detect text that could generate harmful output and prevent it from being sent to the language model",
+                        "name": "inputModeration",
+                        "type": "Moderation",
+                        "optional": true,
+                        "list": true,
+                        "id": "openAIAssistant_0-input-inputModeration-Moderation"
                     }
                 ],
                 "inputs": {

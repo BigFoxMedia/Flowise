@@ -1,7 +1,6 @@
 import { ICommonObject, INode, INodeData } from '../../../src/Interface'
 import { Embeddings } from 'langchain/embeddings/base'
 import { Document } from 'langchain/document'
-
 import { flatten } from 'lodash'
 import { RedisSearchBase } from './RedisSearchBase'
 import { VectorStore } from 'langchain/vectorstores/base'
@@ -56,7 +55,7 @@ class RedisUpsert_VectorStores extends RedisSearchBase implements INode {
             }
         }
 
-        return super.init(nodeData, _, options, flattenDocs)
+        return super.init(nodeData, _, options, finalDocs)
     }
 }
 

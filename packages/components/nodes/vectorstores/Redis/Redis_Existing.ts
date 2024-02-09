@@ -3,7 +3,6 @@ import { Embeddings } from 'langchain/embeddings/base'
 import { VectorStore } from 'langchain/vectorstores/base'
 import { RedisVectorStore, RedisVectorStoreConfig } from 'langchain/vectorstores/redis'
 import { Document } from 'langchain/document'
-
 import { RedisSearchBase } from './RedisSearchBase'
 
 class RedisExisting_VectorStores extends RedisSearchBase implements INode {
@@ -14,8 +13,8 @@ class RedisExisting_VectorStores extends RedisSearchBase implements INode {
         this.version = 1.0
         this.description = 'Load existing index from Redis (i.e: Document has been upserted)'
 
-        // Remove deleteIndex from inputs as it is not applicable while fetching data from Redis
-        let input = this.inputs.find((i) => i.name === 'deleteIndex')
+        // Remove replaceIndex from inputs as it is not applicable while fetching data from Redis
+        let input = this.inputs.find((i) => i.name === 'replaceIndex')
         if (input) this.inputs.splice(this.inputs.indexOf(input), 1)
     }
 

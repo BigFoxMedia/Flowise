@@ -1,5 +1,7 @@
 {
     "description": "Given API docs, agent automatically decide which API to call, generating url and body request from conversation",
+    "categories": "Buffer Memory,ChainTool,API Chain,ChatOpenAI,Conversational Agent,Langchain",
+    "framework": "Langchain",
     "nodes": [
         {
             "width": 300,
@@ -13,8 +15,8 @@
             "data": {
                 "id": "getApiChain_0",
                 "label": "GET API Chain",
-                "name": "getApiChain",
                 "version": 1,
+                "name": "getApiChain",
                 "type": "GETApiChain",
                 "baseClasses": ["GETApiChain", "BaseChain", "BaseLangChain"],
                 "category": "Chains",
@@ -102,8 +104,8 @@
             "data": {
                 "id": "chainTool_0",
                 "label": "Chain Tool",
-                "name": "chainTool",
                 "version": 1,
+                "name": "chainTool",
                 "type": "ChainTool",
                 "baseClasses": ["ChainTool", "DynamicTool", "Tool", "StructuredTool", "BaseLangChain"],
                 "category": "Tools",
@@ -176,8 +178,8 @@
             "data": {
                 "id": "bufferMemory_0",
                 "label": "Buffer Memory",
-                "name": "bufferMemory",
                 "version": 1,
+                "name": "bufferMemory",
                 "type": "BufferMemory",
                 "baseClasses": ["BufferMemory", "BaseChatMemory", "BaseMemory"],
                 "category": "Memory",
@@ -233,8 +235,8 @@
             "data": {
                 "id": "chainTool_1",
                 "label": "Chain Tool",
-                "name": "chainTool",
                 "version": 1,
+                "name": "chainTool",
                 "type": "ChainTool",
                 "baseClasses": ["ChainTool", "DynamicTool", "Tool", "StructuredTool", "BaseLangChain"],
                 "category": "Tools",
@@ -307,8 +309,8 @@
             "data": {
                 "id": "postApiChain_0",
                 "label": "POST API Chain",
-                "name": "postApiChain",
                 "version": 1,
+                "name": "postApiChain",
                 "type": "POSTApiChain",
                 "baseClasses": ["POSTApiChain", "BaseChain", "BaseLangChain"],
                 "category": "Chains",
@@ -386,7 +388,7 @@
         },
         {
             "width": 300,
-            "height": 523,
+            "height": 574,
             "id": "chatOpenAI_2",
             "position": {
                 "x": 572.8941615312035,
@@ -396,8 +398,8 @@
             "data": {
                 "id": "chatOpenAI_2",
                 "label": "ChatOpenAI",
+                "version": 3,
                 "name": "chatOpenAI",
-                "version": 2,
                 "type": "ChatOpenAI",
                 "baseClasses": ["ChatOpenAI", "BaseChatModel", "BaseLanguageModel"],
                 "category": "Chat Models",
@@ -420,6 +422,22 @@
                                 "name": "gpt-4"
                             },
                             {
+                                "label": "gpt-4-turbo-preview",
+                                "name": "gpt-4-turbo-preview"
+                            },
+                            {
+                                "label": "gpt-4-0125-preview",
+                                "name": "gpt-4-0125-preview"
+                            },
+                            {
+                                "label": "gpt-4-1106-preview",
+                                "name": "gpt-4-1106-preview"
+                            },
+                            {
+                                "label": "gpt-4-vision-preview",
+                                "name": "gpt-4-vision-preview"
+                            },
+                            {
                                 "label": "gpt-4-0613",
                                 "name": "gpt-4-0613"
                             },
@@ -434,6 +452,10 @@
                             {
                                 "label": "gpt-3.5-turbo",
                                 "name": "gpt-3.5-turbo"
+                            },
+                            {
+                                "label": "gpt-3.5-turbo-1106",
+                                "name": "gpt-3.5-turbo-1106"
                             },
                             {
                                 "label": "gpt-3.5-turbo-0613",
@@ -507,6 +529,14 @@
                         "optional": true,
                         "additionalParams": true,
                         "id": "chatOpenAI_2-input-basepath-string"
+                    },
+                    {
+                        "label": "BaseOptions",
+                        "name": "baseOptions",
+                        "type": "json",
+                        "optional": true,
+                        "additionalParams": true,
+                        "id": "chatOpenAI_2-input-baseOptions-json"
                     }
                 ],
                 "inputAnchors": [
@@ -526,7 +556,8 @@
                     "frequencyPenalty": "",
                     "presencePenalty": "",
                     "timeout": "",
-                    "basepath": ""
+                    "basepath": "",
+                    "baseOptions": ""
                 },
                 "outputAnchors": [
                     {
@@ -548,7 +579,7 @@
         },
         {
             "width": 300,
-            "height": 523,
+            "height": 574,
             "id": "chatOpenAI_1",
             "position": {
                 "x": 828.7788305309582,
@@ -558,8 +589,8 @@
             "data": {
                 "id": "chatOpenAI_1",
                 "label": "ChatOpenAI",
+                "version": 3,
                 "name": "chatOpenAI",
-                "version": 2,
                 "type": "ChatOpenAI",
                 "baseClasses": ["ChatOpenAI", "BaseChatModel", "BaseLanguageModel"],
                 "category": "Chat Models",
@@ -582,6 +613,22 @@
                                 "name": "gpt-4"
                             },
                             {
+                                "label": "gpt-4-turbo-preview",
+                                "name": "gpt-4-turbo-preview"
+                            },
+                            {
+                                "label": "gpt-4-0125-preview",
+                                "name": "gpt-4-0125-preview"
+                            },
+                            {
+                                "label": "gpt-4-1106-preview",
+                                "name": "gpt-4-1106-preview"
+                            },
+                            {
+                                "label": "gpt-4-vision-preview",
+                                "name": "gpt-4-vision-preview"
+                            },
+                            {
                                 "label": "gpt-4-0613",
                                 "name": "gpt-4-0613"
                             },
@@ -596,6 +643,10 @@
                             {
                                 "label": "gpt-3.5-turbo",
                                 "name": "gpt-3.5-turbo"
+                            },
+                            {
+                                "label": "gpt-3.5-turbo-1106",
+                                "name": "gpt-3.5-turbo-1106"
                             },
                             {
                                 "label": "gpt-3.5-turbo-0613",
@@ -669,6 +720,14 @@
                         "optional": true,
                         "additionalParams": true,
                         "id": "chatOpenAI_1-input-basepath-string"
+                    },
+                    {
+                        "label": "BaseOptions",
+                        "name": "baseOptions",
+                        "type": "json",
+                        "optional": true,
+                        "additionalParams": true,
+                        "id": "chatOpenAI_1-input-baseOptions-json"
                     }
                 ],
                 "inputAnchors": [
@@ -688,7 +747,8 @@
                     "frequencyPenalty": "",
                     "presencePenalty": "",
                     "timeout": "",
-                    "basepath": ""
+                    "basepath": "",
+                    "baseOptions": ""
                 },
                 "outputAnchors": [
                     {
@@ -710,7 +770,7 @@
         },
         {
             "width": 300,
-            "height": 523,
+            "height": 574,
             "id": "chatOpenAI_3",
             "position": {
                 "x": 1148.338912314111,
@@ -720,8 +780,8 @@
             "data": {
                 "id": "chatOpenAI_3",
                 "label": "ChatOpenAI",
+                "version": 3,
                 "name": "chatOpenAI",
-                "version": 2,
                 "type": "ChatOpenAI",
                 "baseClasses": ["ChatOpenAI", "BaseChatModel", "BaseLanguageModel"],
                 "category": "Chat Models",
@@ -744,6 +804,22 @@
                                 "name": "gpt-4"
                             },
                             {
+                                "label": "gpt-4-turbo-preview",
+                                "name": "gpt-4-turbo-preview"
+                            },
+                            {
+                                "label": "gpt-4-0125-preview",
+                                "name": "gpt-4-0125-preview"
+                            },
+                            {
+                                "label": "gpt-4-1106-preview",
+                                "name": "gpt-4-1106-preview"
+                            },
+                            {
+                                "label": "gpt-4-vision-preview",
+                                "name": "gpt-4-vision-preview"
+                            },
+                            {
                                 "label": "gpt-4-0613",
                                 "name": "gpt-4-0613"
                             },
@@ -758,6 +834,10 @@
                             {
                                 "label": "gpt-3.5-turbo",
                                 "name": "gpt-3.5-turbo"
+                            },
+                            {
+                                "label": "gpt-3.5-turbo-1106",
+                                "name": "gpt-3.5-turbo-1106"
                             },
                             {
                                 "label": "gpt-3.5-turbo-0613",
@@ -831,6 +911,14 @@
                         "optional": true,
                         "additionalParams": true,
                         "id": "chatOpenAI_3-input-basepath-string"
+                    },
+                    {
+                        "label": "BaseOptions",
+                        "name": "baseOptions",
+                        "type": "json",
+                        "optional": true,
+                        "additionalParams": true,
+                        "id": "chatOpenAI_3-input-baseOptions-json"
                     }
                 ],
                 "inputAnchors": [
@@ -843,14 +931,15 @@
                     }
                 ],
                 "inputs": {
-                    "modelName": "gpt-3.5-turbo",
+                    "modelName": "gpt-3.5-turbo-16k",
                     "temperature": 0.9,
                     "maxTokens": "",
                     "topP": "",
                     "frequencyPenalty": "",
                     "presencePenalty": "",
                     "timeout": "",
-                    "basepath": ""
+                    "basepath": "",
+                    "baseOptions": ""
                 },
                 "outputAnchors": [
                     {
@@ -875,17 +964,17 @@
             "height": 383,
             "id": "conversationalAgent_0",
             "position": {
-                "x": 2114.071431691489,
-                "y": 941.7926368551367
+                "x": 2090.570467632979,
+                "y": 969.5131357270544
             },
             "type": "customNode",
             "data": {
                 "id": "conversationalAgent_0",
                 "label": "Conversational Agent",
+                "version": 2,
                 "name": "conversationalAgent",
-                "version": 1,
                 "type": "AgentExecutor",
-                "baseClasses": ["AgentExecutor", "BaseChain"],
+                "baseClasses": ["AgentExecutor", "BaseChain", "Runnable"],
                 "category": "Agents",
                 "description": "Conversational agent for a chat model. It will utilize chat specific prompts",
                 "inputParams": [
@@ -909,10 +998,10 @@
                         "id": "conversationalAgent_0-input-tools-Tool"
                     },
                     {
-                        "label": "Language Model",
+                        "label": "Chat Model",
                         "name": "model",
-                        "type": "BaseLanguageModel",
-                        "id": "conversationalAgent_0-input-model-BaseLanguageModel"
+                        "type": "BaseChatModel",
+                        "id": "conversationalAgent_0-input-model-BaseChatModel"
                     },
                     {
                         "label": "Memory",
@@ -929,21 +1018,21 @@
                 },
                 "outputAnchors": [
                     {
-                        "id": "conversationalAgent_0-output-conversationalAgent-AgentExecutor|BaseChain",
+                        "id": "conversationalAgent_0-output-conversationalAgent-AgentExecutor|BaseChain|Runnable",
                         "name": "conversationalAgent",
                         "label": "AgentExecutor",
-                        "type": "AgentExecutor | BaseChain"
+                        "type": "AgentExecutor | BaseChain | Runnable"
                     }
                 ],
                 "outputs": {},
                 "selected": false
             },
             "selected": false,
-            "dragging": false,
             "positionAbsolute": {
-                "x": 2114.071431691489,
-                "y": 941.7926368551367
-            }
+                "x": 2090.570467632979,
+                "y": 969.5131357270544
+            },
+            "dragging": false
         }
     ],
     "edges": [
@@ -1017,9 +1106,9 @@
             "source": "chatOpenAI_3",
             "sourceHandle": "chatOpenAI_3-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel",
             "target": "conversationalAgent_0",
-            "targetHandle": "conversationalAgent_0-input-model-BaseLanguageModel",
+            "targetHandle": "conversationalAgent_0-input-model-BaseChatModel",
             "type": "buttonedge",
-            "id": "chatOpenAI_3-chatOpenAI_3-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel-conversationalAgent_0-conversationalAgent_0-input-model-BaseLanguageModel",
+            "id": "chatOpenAI_3-chatOpenAI_3-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel-conversationalAgent_0-conversationalAgent_0-input-model-BaseChatModel",
             "data": {
                 "label": ""
             }

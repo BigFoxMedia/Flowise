@@ -7,10 +7,11 @@ import rehypeMathjax from 'rehype-mathjax'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
+import axios from 'axios'
 
-import { CircularProgress, OutlinedInput, Divider, InputAdornment, IconButton, Box, Chip } from '@mui/material'
+import { CircularProgress, OutlinedInput, Divider, InputAdornment, IconButton, Box, Chip, Button } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { IconSend } from '@tabler/icons'
+import { IconSend, IconDownload } from '@tabler/icons'
 
 // project import
 import { CodeBlock } from 'ui-component/markdown/CodeBlock'
@@ -31,7 +32,8 @@ import { baseURL, maxScroll } from 'store/constant'
 
 import robotPNG from 'assets/images/robot.png'
 import userPNG from 'assets/images/account.png'
-import { isValidURL, removeDuplicateURL } from 'utils/genericHelper'
+import StarterPromptsCard from '../../ui-component/cards/StarterPromptsCard'
+import { isValidURL, removeDuplicateURL, setLocalStorageChatflow } from 'utils/genericHelper'
 
 export const ChatMessage = ({ open, chatflowid, isDialog }) => {
     const theme = useTheme()
@@ -56,6 +58,9 @@ export const ChatMessage = ({ open, chatflowid, isDialog }) => {
     const inputRef = useRef(null)
     const getChatmessageApi = useApi(chatmessageApi.getInternalChatmessageFromChatflow)
     const getIsChatflowStreamingApi = useApi(chatflowsApi.getIsChatflowStreaming)
+    const getChatflowConfig = useApi(chatflowsApi.getSpecificChatflow)
+
+    const [starterPrompts, setStarterPrompts] = useState([])
 
     const onSourceDialogClick = (data, title) => {
         setSourceDialogProps({ data, title })
@@ -103,21 +108,30 @@ export const ChatMessage = ({ open, chatflowid, isDialog }) => {
         }, 100)
     }
 
-    // Handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+    const handlePromptClick = async (promptStarterInput) => {
+        setUserInput(promptStarterInput)
+        handleSubmit(undefined, promptStarterInput)
+    }
 
-        if (userInput.trim() === '') {
+    // Handle form submission
+    const handleSubmit = async (e, promptStarterInput) => {
+        if (e) e.preventDefault()
+
+        if (!promptStarterInput && userInput.trim() === '') {
             return
         }
 
+        let input = userInput
+
+        if (promptStarterInput !== undefined && promptStarterInput.trim() !== '') input = promptStarterInput
+
         setLoading(true)
-        setMessages((prevMessages) => [...prevMessages, { message: userInput, type: 'userMessage' }])
+        setMessages((prevMessages) => [...prevMessages, { message: input, type: 'userMessage' }])
 
         // Send user question and history to API
         try {
             const params = {
-                question: userInput,
+                question: input,
                 history: messages.filter((msg) => msg.message !== 'Hi there! How can I help?'),
                 chatId
             }
@@ -127,10 +141,9 @@ export const ChatMessage = ({ open, chatflowid, isDialog }) => {
 
             if (response.data) {
                 const data = response.data
-                if (!chatId) {
-                    setChatId(data.chatId)
-                    localStorage.setItem(`${chatflowid}_INTERNAL`, data.chatId)
-                }
+
+                if (!chatId) setChatId(data.chatId)
+
                 if (!isChatFlowAvailableToStream) {
                     let text = ''
                     if (data.text) text = data.text
@@ -139,10 +152,16 @@ export const ChatMessage = ({ open, chatflowid, isDialog }) => {
 
                     setMessages((prevMessages) => [
                         ...prevMessages,
-                        { message: text, sourceDocuments: data?.sourceDocuments, usedTools: data?.usedTools, type: 'apiMessage' }
+                        {
+                            message: text,
+                            sourceDocuments: data?.sourceDocuments,
+                            usedTools: data?.usedTools,
+                            fileAnnotations: data?.fileAnnotations,
+                            type: 'apiMessage'
+                        }
                     ])
                 }
-
+                setLocalStorageChatflow(chatflowid, data.chatId, messages)
                 setLoading(false)
                 setUserInput('')
                 setTimeout(() => {
@@ -170,12 +189,31 @@ export const ChatMessage = ({ open, chatflowid, isDialog }) => {
         }
     }
 
+    const downloadFile = async (fileAnnotation) => {
+        try {
+            const response = await axios.post(
+                `${baseURL}/api/v1/openai-assistants-file`,
+                { fileName: fileAnnotation.fileName },
+                { responseType: 'blob' }
+            )
+            const blob = new Blob([response.data], { type: response.headers['content-type'] })
+            const downloadUrl = window.URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = downloadUrl
+            link.download = fileAnnotation.fileName
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+        } catch (error) {
+            console.error('Download failed:', error)
+        }
+    }
+
     // Get chatmessages successful
     useEffect(() => {
         if (getChatmessageApi.data?.length) {
             const chatId = getChatmessageApi.data[0]?.chatId
             setChatId(chatId)
-            localStorage.setItem(`${chatflowid}_INTERNAL`, chatId)
             const loadedMessages = getChatmessageApi.data.map((message) => {
                 const obj = {
                     message: message.content,
@@ -183,9 +221,11 @@ export const ChatMessage = ({ open, chatflowid, isDialog }) => {
                 }
                 if (message.sourceDocuments) obj.sourceDocuments = JSON.parse(message.sourceDocuments)
                 if (message.usedTools) obj.usedTools = JSON.parse(message.usedTools)
+                if (message.fileAnnotations) obj.fileAnnotations = JSON.parse(message.fileAnnotations)
                 return obj
             })
             setMessages((prevMessages) => [...prevMessages, ...loadedMessages])
+            setLocalStorageChatflow(chatflowid, chatId, messages)
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -196,9 +236,26 @@ export const ChatMessage = ({ open, chatflowid, isDialog }) => {
         if (getIsChatflowStreamingApi.data) {
             setIsChatFlowAvailableToStream(getIsChatflowStreamingApi.data?.isStreaming ?? false)
         }
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getIsChatflowStreamingApi.data])
+
+    useEffect(() => {
+        if (getChatflowConfig.data) {
+            if (getChatflowConfig.data?.chatbotConfig && JSON.parse(getChatflowConfig.data?.chatbotConfig)) {
+                let config = JSON.parse(getChatflowConfig.data?.chatbotConfig)
+                if (config.starterPrompts) {
+                    let inputFields = []
+                    Object.getOwnPropertyNames(config.starterPrompts).forEach((key) => {
+                        if (config.starterPrompts[key]) {
+                            inputFields.push(config.starterPrompts[key])
+                        }
+                    })
+                    setStarterPrompts(inputFields)
+                }
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getChatflowConfig.data])
 
     // Auto scroll chat to bottom
     useEffect(() => {
@@ -218,6 +275,7 @@ export const ChatMessage = ({ open, chatflowid, isDialog }) => {
         if (open && chatflowid) {
             getChatmessageApi.request(chatflowid)
             getIsChatflowStreamingApi.request(chatflowid)
+            getChatflowConfig.request(chatflowid)
             scrollToBottom()
 
             socket = socketIOClient(baseURL)
@@ -331,10 +389,30 @@ export const ChatMessage = ({ open, chatflowid, isDialog }) => {
                                                     {message.message}
                                                 </MemoizedReactMarkdown>
                                             </div>
+                                            {message.fileAnnotations && (
+                                                <div style={{ display: 'block', flexDirection: 'row', width: '100%' }}>
+                                                    {message.fileAnnotations.map((fileAnnotation, index) => {
+                                                        return (
+                                                            <Button
+                                                                sx={{ fontSize: '0.85rem', textTransform: 'none', mb: 1 }}
+                                                                key={index}
+                                                                variant='outlined'
+                                                                onClick={() => downloadFile(fileAnnotation)}
+                                                                endIcon={<IconDownload color={theme.palette.primary.main} />}
+                                                            >
+                                                                {fileAnnotation.fileName}
+                                                            </Button>
+                                                        )
+                                                    })}
+                                                </div>
+                                            )}
                                             {message.sourceDocuments && (
                                                 <div style={{ display: 'block', flexDirection: 'row', width: '100%' }}>
                                                     {removeDuplicateURL(message).map((source, index) => {
-                                                        const URL = isValidURL(source.metadata.source)
+                                                        const URL =
+                                                            source.metadata && source.metadata.source
+                                                                ? isValidURL(source.metadata.source)
+                                                                : undefined
                                                         return (
                                                             <Chip
                                                                 size='small'
@@ -365,7 +443,13 @@ export const ChatMessage = ({ open, chatflowid, isDialog }) => {
                         })}
                 </div>
             </div>
-            <Divider />
+
+            <div style={{ position: 'relative' }}>
+                {messages && messages.length === 1 && (
+                    <StarterPromptsCard starterPrompts={starterPrompts || []} onPromptClick={handlePromptClick} isGrid={isDialog} />
+                )}
+                <Divider />
+            </div>
             <div className='center'>
                 <div style={{ width: '100%' }}>
                     <form style={{ width: '100%' }} onSubmit={handleSubmit}>
